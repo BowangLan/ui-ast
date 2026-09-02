@@ -662,6 +662,10 @@
     min-height: var(--wf-min-block, auto);
   }
 
+  .wf-node * {
+    flex: 0 0 auto;
+  }
+
   .wf-node[data-inline="fill"] {
     width: 100%;
   }
