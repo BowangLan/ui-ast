@@ -53,6 +53,8 @@ Every rendered primitive is `flex: 0 0 auto` by default. Semantic primitives tha
 
 `Row` centers children on its cross axis by default. Explicit `align="start|center|end|baseline|stretch"` values override that component default.
 
+`Stack` renders a fixed `8px` gap between children at every preview width. This is a wireframe-renderer convention, not serialized Layer 2 styling information.
+
 The numeric minimums are heuristics of this viewer. They are part of the executable primitive definition, not serialized AST data and not a promise that another renderer will produce identical pixels.
 
 ## Collection projection

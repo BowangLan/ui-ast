@@ -781,7 +781,7 @@
   .wf-stack {
     display: flex;
     flex-direction: column;
-    gap: clamp(12px, 2.4cqi, 20px);
+    gap: 8px;
   }
 
   .wf-grid,
