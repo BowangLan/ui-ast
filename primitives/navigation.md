@@ -15,4 +15,4 @@ Navigation primitives expose movement among views, regions, or steps.
 
 Use `Tabs` for peer content views and `BottomTabBar` for primary application navigation even though both contain `Tab`. Use `Stepper` only when order and progress through a workflow matter.
 
-Source order is navigation order. Visual placement details, mobile safe areas, sticky positioning, and transition animation are Layer 3 or implementation concerns.
+Source order is navigation order. Sticky or fixed placement and numeric bar height are optional Layer 2 geometry when they materially affect reconstruction. Mobile safe-area treatment and transition animation remain Layer 3 or implementation concerns.

@@ -649,6 +649,7 @@
     container: wireframe / inline-size;
     width: 100%;
     min-height: inherit;
+    transform: translateZ(0);
     color: var(--ink);
     font-family: "Avenir Next", Avenir, "Segoe UI", system-ui, sans-serif;
     font-size: 13px;
@@ -677,6 +678,15 @@
 
   .wf-node[data-inline="compact"] {
     width: var(--wf-min-inline);
+  }
+
+  .wf-node[data-position="sticky"] {
+    z-index: 2;
+  }
+
+  .wf-node[data-position="fixed"],
+  .wf-node[data-position="floating"] {
+    z-index: 3;
   }
 
   .wf-row > .wf-node[data-inline="fill"] {
@@ -800,6 +810,11 @@
     border-right: 1px solid var(--line);
   }
 
+  .wf-sidebar[data-edge="right"] {
+    border-right: 0;
+    border-left: 1px solid var(--line);
+  }
+
   .wf-spacer {
     flex: 1 1 auto;
     min-width: 12px;
@@ -816,6 +831,7 @@
 
   .wf-text {
     max-width: 58ch;
+    min-height: calc(var(--wf-lines) * 1lh);
   }
 
   .wf-description,
@@ -1401,6 +1417,13 @@
   .wf-drawer {
     margin-left: auto;
     border-left-width: 2px;
+  }
+
+  .wf-drawer[data-edge="left"] {
+    margin-right: auto;
+    margin-left: 0;
+    border-right-width: 2px;
+    border-left-width: 1px;
   }
 
   .wf-tooltip {

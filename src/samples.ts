@@ -3,6 +3,7 @@ import lumaHome from "../examples/luma-home.jsx?raw";
 import masterDetail from "../examples/master-detail.jsx?raw";
 import settings from "../examples/settings.jsx?raw";
 import simpleList from "../examples/simple-list.jsx?raw";
+import spatialGeometry from "../examples/spatial-geometry.jsx?raw";
 
 export const samples = [
   { id: "luma-home", label: "Event feed", source: lumaHome },
@@ -10,6 +11,11 @@ export const samples = [
   { id: "data-table", label: "Data table", source: dataTable },
   { id: "settings", label: "Settings", source: settings },
   { id: "master-detail", label: "Master–detail", source: masterDetail },
+  {
+    id: "spatial-geometry",
+    label: "Spatial geometry",
+    source: spatialGeometry,
+  },
 ] as const;
 
 export type SampleId = (typeof samples)[number]["id"];

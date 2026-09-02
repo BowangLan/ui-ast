@@ -20,6 +20,6 @@ Display primitives communicate information without themselves accepting user inp
 | `RelativeTime` | Time relative to the current moment                       | `field`, `value`                                                 |
 | `IconText`     | A semantic icon paired with a short value                 | `icon`, `field`, `value`, optional `label`                       |
 
-Literal text may be a child instead of `value`. Do not specify display formats, truncation sizes, font treatment, image dimensions, crop, or icon libraries.
+Literal text may be a child instead of `value`. Do not specify display formats, font treatment, image crop treatment, or icon libraries. Optional `width`, `height`, `size`, `aspectRatio`, and text `lines` may preserve consequential geometry as defined in [Spatial geometry](../docs/spatial-geometry.md); their omission uses primitive inference.
 
 `Description` and `Metadata` remain provisional aliases for common `Text kind` roles. Canonical v0.1 examples prefer `Text kind` unless the dedicated role is being evaluated. Decorative images and icons are omitted.

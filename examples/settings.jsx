@@ -5,7 +5,7 @@
     </Header>
 
     <Split primary="second">
-      <Sidebar position="left">
+      <Sidebar edge="left">
         <SidebarNav label="Settings sections">
           <Link destination="settings-profile" selected>
             Profile

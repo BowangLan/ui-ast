@@ -11,13 +11,13 @@ The key words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** ar
 UI AST describes an observed or intended user interface at the level of concrete UI structure and interaction. It records:
 
 - visible structural regions and their hierarchy;
-- qualitative spatial composition and semantic order;
+- spatial composition, semantic order, and optional reconstructive geometry;
 - established display, input, navigation, collection, and overlay patterns;
 - the information communicated by elements;
 - the actions and destinations exposed to a user; and
 - UI state that materially affects what the user perceives or can do.
 
-UI AST does not define visual styling, application data schemas, business logic, platform widgets, rendering algorithms, or framework code. A conforming document need not be sufficient to reproduce an interface deterministically.
+UI AST does not define visual styling, application data schemas, business logic, platform widgets, rendering algorithms, or framework code. When optional geometry is present, a conforming renderer SHOULD be able to reconstruct a wireframe with approximately the same major sizes, positions, grouping, and scrolling behavior. Pixel-identical rendering is not a goal.
 
 ## 2. Terminology
 
@@ -40,6 +40,10 @@ UI AST does not define visual styling, application data schemas, business logic,
 **Destination reference** — an opaque stable name for a navigation target.
 
 **Snapshot state** — a literal state observed in the represented UI, such as a selected tab.
+
+**Intrinsic geometry** — a primitive-defined size or layout behavior used when a document omits an explicit geometry prop.
+
+**Reference unit** — a unitless logical screen distance at the viewport from which an interface was observed. The browser reference viewer maps one reference unit to one CSS pixel.
 
 ## 3. Representation and document model
 
@@ -92,20 +96,22 @@ The standard vocabulary is defined in [primitives](primitives). A primitive's om
 
 A prop is allowed only when its value materially affects information hierarchy, spatial hierarchy, grouping, discoverability, interaction method, user flow, accessible meaning, or visible UI state.
 
-| Category         | Standard props                                                           | Purpose                                           |
-| ---------------- | ------------------------------------------------------------------------ | ------------------------------------------------- |
-| Identity         | `id`                                                                     | Stable document-local identity                    |
-| Data             | `source`, `field`, `entity`, `value`, `groupBy`                          | Bind collections or displayed values              |
-| Interaction      | `action`, `destination`, `label`, `controls`                             | Name commands, navigation, and controlled regions |
-| Layout           | `align`, `justify`, `columns`, `position`, `primary`                     | Qualitative spatial composition                   |
-| Hierarchy        | `level`, `kind`, `emphasis`                                              | Information or decision importance                |
-| State            | `selected`, `checked`, `expanded`, `disabled`, `busy`, `invalid`, `when` | Snapshot or referenced visible state              |
-| Input            | `name`, `placeholder`, `required`, `multiple`, `options`                 | User-entered or selected information              |
-| Pattern-specific | `icon`, `badge`, `sortBy`, `selection`, and primitive-defined props      | Semantics unique to a concrete pattern            |
+| Category         | Standard props                                                                        | Purpose                                           |
+| ---------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Identity         | `id`                                                                                  | Stable document-local identity                    |
+| Data             | `source`, `field`, `entity`, `value`, `groupBy`                                       | Bind collections or displayed values              |
+| Interaction      | `action`, `destination`, `label`, `controls`                                          | Name commands, navigation, and controlled regions |
+| Geometry         | `width`, `height`, `gap`, `padding`, `flex`, `columns`, `position`, and related props | Optional spatial reconstruction data              |
+| Hierarchy        | `level`, `kind`, `emphasis`                                                           | Information or decision importance                |
+| State            | `selected`, `checked`, `expanded`, `disabled`, `busy`, `invalid`, `when`              | Snapshot or referenced visible state              |
+| Input            | `name`, `placeholder`, `required`, `multiple`, `options`                              | User-entered or selected information              |
+| Pattern-specific | `icon`, `badge`, `sortBy`, `selection`, and primitive-defined props                   | Semantics unique to a concrete pattern            |
 
 The table is not permission to place every prop on every primitive. Each primitive reference defines meaningful props. Unlisted props require the extension process in section 13.
 
 `emphasis="primary|secondary|danger"` is allowed only on actions. It expresses decision hierarchy or destructive consequence, not color or styling.
+
+The complete geometry prop grammar is defined in [docs/spatial-geometry.md](docs/spatial-geometry.md). Geometry props are optional. If omitted, a renderer MUST use the primitive's intrinsic geometry before applying its own fallback.
 
 ### 5.2 Forbidden styling information
 
@@ -114,21 +120,21 @@ Documents MUST NOT contain props or nodes whose purpose is to encode:
 - color, opacity, gradient, texture, or background treatment;
 - font family, font size, font weight, line height, or letter spacing;
 - borders, strokes, corner radii, or shadows;
-- exact gap, margin, padding, inset, coordinates, width, height, or aspect ratio;
-- responsive breakpoints or device-specific pixel values;
+- CSS lengths, percentages, calculations, viewport units, or arbitrary track formulas;
+- responsive breakpoints or framework-specific device queries;
 - class names, CSS, style objects, design tokens, or theme identifiers;
 - animation duration, easing, or other visual motion treatment; or
 - implementation-framework, component-library, or DOM details.
 
-An exact count MAY be used when it changes composition rather than styling: `Grid columns={3}`, a pagination page, or a progress value is valid. Intrinsic media semantics such as image alternative text are also valid.
+Optional numeric reference-unit geometry is not Layer 3 styling. It is allowed only through the canonical props and literal values in [docs/spatial-geometry.md](docs/spatial-geometry.md). For example, `width={280}`, `gap={12}`, and `aspectRatio="16/9"` are valid; `width="280px"`, `gap="space-3"`, and a CSS style object are not.
 
-`Spacer` is valid only for a meaningful flexible separation in composition. It MUST NOT carry a size.
+`Spacer` is valid only for a meaningful flexible separation in composition. Ordinary regular spacing SHOULD use parent `gap`, not repeated `Spacer` nodes.
 
 ## 6. Composition rules
 
 - Structure nodes establish meaningful regions; layout nodes arrange siblings; leaf nodes display information or expose interaction.
 - Authors SHOULD use the fewest nodes that preserve meaningful UI form.
-- Authors MUST NOT insert wrappers solely to mirror DOM structure, implementation components, or visual spacing.
+- Authors MUST NOT insert wrappers solely to mirror DOM structure or implementation components. A layout wrapper MAY be used when it establishes a real geometry relationship that no existing parent owns, but not merely to avoid a canonical `gap` or `padding` prop.
 - A node MAY combine a concrete pattern with children when that pattern conventionally has anatomy: `Dialog`, `Card`, `Menu`, and `ListItem` are examples.
 - Interactive nodes MUST NOT be nested when doing so would produce competing activation semantics. For example, a `Link` MUST NOT contain a `Button`.
 - Repeated UI MUST use an appropriate collection node rather than copying sample instances, unless the instances are semantically fixed navigation or form choices.
@@ -198,28 +204,32 @@ State nodes MAY appear beside their normal-content region to document alternativ
 
 State that does not change the perceived interface or available interaction SHOULD be omitted. Business workflow state belongs in Layer 1 unless manifested through a Layer 2 element such as a `Badge`, disabled action, or progress indicator.
 
-## 10. Layout semantics
+## 10. Spatial geometry
 
-Layout encodes qualitative relationships, never measurement.
+Layout primitives establish relationships; optional geometry props refine those relationships enough to reconstruct a faithful wireframe.
 
 - `Row` composes children along a horizontal reading axis.
 - `Stack` composes children along a vertical reading axis.
-- `Grid` places repeated or comparable items in two-dimensional tracks. `columns` is a positive integer only when the observed track count is meaningful.
+- `Grid` places repeated or comparable items in two-dimensional tracks. `columns` is a positive integer; direct children MAY use `columnSpan` and `rowSpan`.
 - `Split` creates two peer regions. `primary="first|second"` MAY identify the region with greater information or interaction priority.
-- `Sidebar` identifies a secondary edge region; `position="left|right"` records its relationship to primary content.
-- `Spacer` consumes otherwise available space to separate meaningful groups. It has no sizing props.
+- `Sidebar` identifies a secondary edge region; `edge="left|right"` records its relationship to primary content.
+- `Spacer` consumes otherwise available space to separate meaningful groups.
 
-`align="start|center|end|baseline|stretch"` describes the cross-axis relationship. `Row` defaults to `align="center"` when the prop is omitted. `justify="start|center|end|between|around|evenly"` describes main-axis distribution. Authors SHOULD omit default or visually uncertain values.
+`align="start|center|end|baseline|stretch"` describes the cross-axis relationship. `Row` defaults to `align="center"` when the prop is omitted. `justify="start|center|end|between|around|evenly"` describes main-axis distribution.
 
-Layout nodes do not imply CSS flexbox or grid. Responsive alternatives are not standardized in v0.1; document the dominant observed composition and note meaningful variants when necessary.
+Every geometry prop is optional. Resolution MUST proceed from an explicit node prop, to the primitive's intrinsic geometry, to a renderer fallback. Omission means infer, not zero. Explicit geometry overrides only the named relationship or dimension.
 
-### 10.1 Renderer intrinsic sizing
+The canonical sizing values are `"fill"`, `"content"`, a numeric reference-unit dimension, `flex={n}` for proportional main-axis allocation, and `aspectRatio="w/h"` for derived media geometry. Exact measurements SHOULD be preserved only when they materially affect reconstruction; relationships are preferred when they explain the same form.
 
-A renderer MAY associate intrinsic size metadata with each primitive definition. Such metadata can distinguish fill, content-sized, compact, line, control, media, and region behavior. It MAY include renderer-specific minimums or aspect ratios needed to produce a useful preview.
+Scrolling, overflow, sticky/fixed positioning, anchored floating overlays, spacing rules, text/media sizing, numeric value constraints, and absolute-positioning escape hatches are normative in [docs/spatial-geometry.md](docs/spatial-geometry.md).
 
-Intrinsic sizing metadata MUST NOT be serialized as document props. In particular, renderer minimums do not make `width`, `height`, `gap`, or other Layer 3 measurements valid UI AST. Different renderers MAY choose different pixels while preserving the primitive's qualitative size behavior.
+### 10.1 Renderer intrinsic geometry
 
-The repository's executable registry is a non-normative reference implementation of this rule.
+A renderer MUST associate useful intrinsic geometry with every standard primitive. Metadata MAY distinguish fill, content-sized, compact, line, control, media, and region behavior and MAY include renderer-specific minimums or aspect ratios.
+
+Intrinsic metadata is not serialized into every node. A document MAY override it with canonical geometry props. Different renderers MAY choose different inferred values while preserving primitive behavior; explicit numeric reference-unit geometry SHOULD map consistently enough for approximate reconstruction.
+
+The repository's executable registry is the v0.1 reference implementation of this fallback model.
 
 ## 11. Collections and scopes
 
@@ -249,6 +259,8 @@ Canonical choices include:
 - `SearchInput`, not `TextInput role="search"`;
 - `IconButton` for an icon-only button;
 - `Row` and `Stack` for horizontal and vertical composition;
+- `"content"`, not `"hug"`, `"fit"`, or `"auto"`, for content-derived sizing;
+- `gap` on the parent before margin or spacer nodes for regular separation;
 - `ListItem entity="event"`, not a domain node named `Event`;
 - `Title level="section"`, not `SectionTitle`;
 - explicit controls such as `SelectFilter`, not capabilities such as `Filter`; and
@@ -267,8 +279,9 @@ A proposal for standardization SHOULD include:
 - at least two cross-domain examples;
 - why composition is insufficient or materially less comparable;
 - allowed children and semantic props;
-- canonicalization against adjacent primitives; and
-- an explanation of the Layer 2 versus Layer 3 boundary.
+- canonicalization against adjacent primitives;
+- an explanation of the Layer 2 versus Layer 3 boundary; and
+- an explanation of whether any proposed geometry can be expressed by the canonical spatial props.
 
 Standard primitives MAY be deprecated only with a documented canonical replacement. v0.1 defines no compatibility mechanism or registry.
 
@@ -276,6 +289,7 @@ Standard primitives MAY be deprecated only with a documented canonical replaceme
 
 - [Structure](primitives/structure.md)
 - [Layout](primitives/layout.md)
+- [Spatial geometry](docs/spatial-geometry.md)
 - [Display](primitives/display.md)
 - [Actions](primitives/actions.md)
 - [Input](primitives/input.md)
@@ -294,10 +308,11 @@ The following are explicitly unresolved in v0.1:
 - a machine-readable schema and interchange form beyond restricted JSX;
 - a canonical grammar for fixed options, table cells, tree recursion, and slot-like anatomy;
 - data-reference scoping, global references, joins, and destination parameters;
-- responsive or modality-specific variants without introducing Layer 3 breakpoints;
+- responsive or modality-specific variants without embedding CSS breakpoints;
 - whether `Description` and `Metadata` justify separate primitives from `Text kind`;
 - when `Card`, `Panel`, and plain structural composition are observably distinct;
 - how to represent drag-and-drop, direct manipulation, and spatial canvases;
+- whether grids need a compact relational track grammar beyond equal columns and spans;
 - how much accessibility semantics must be explicit versus inherent in primitives; and
 - how canonical similarity should eventually be measured.
 

@@ -28,9 +28,11 @@ Layer 1 identifies information and domain concepts. Layer 2 gives that informati
 
 The tree does not restate the order schema, and it does not choose a color for the badge.
 
-## Describe significance, not pixels
+## Preserve consequential geometry
 
-Qualitative layout is semantic when it affects reading order, grouping, comparison, or discoverability. `Row`, `Stack`, `justify="between"`, and `Sidebar position="left"` belong in Layer 2. `gap={12}`, `padding={16}`, and `width={280}` do not.
+Layout is semantic when it affects reading order, grouping, comparison, discoverability, or reconstruction. `Row`, `Stack`, `justify="between"`, and `Sidebar edge="left"` belong in Layer 2. Optional `gap={12}`, `padding={16}`, and `width={280}` also belong when they preserve material source geometry.
+
+Prefer relationships such as `width="fill"`, `flex={1}`, and `aspectRatio="16/9"` over measurements that merely restate screenshot coordinates. When geometry is omitted, primitives retain intrinsic defaults and the renderer infers the wireframe.
 
 Likewise, action emphasis can affect the user's choices, so `emphasis="primary"` is allowed. A button's blue fill is not.
 

@@ -10,6 +10,6 @@ Complex primitives are provisional escape hatches for established interaction fo
 | `Kanban`   | Records grouped into movable workflow columns               | `source`, `groupBy`, `selection`, `action`                |
 | `Chart`    | Data encoded graphically for comparison or trend perception | `source`, `kind`, `label`, optional `selection`, `action` |
 
-Complex nodes SHOULD still expose meaningful surrounding titles, filters, legends, and actions through ordinary primitives. They MUST NOT carry visual-encoding props such as colors, stroke widths, chart pixel sizes, or animation timing.
+Complex nodes SHOULD still expose meaningful surrounding titles, filters, legends, and actions through ordinary primitives. Their outer viewport MAY use canonical geometry props. They MUST NOT carry visual-encoding props such as colors, stroke widths, internal mark coordinates, or animation timing.
 
 Allowed `Chart kind` values are not standardized in v0.1. Internal anatomy, direct manipulation, event templates, axes, and legends are open questions. Authors SHOULD document an experimental extension when the opaque primitive would omit information essential to the task.

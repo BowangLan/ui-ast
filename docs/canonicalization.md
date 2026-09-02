@@ -21,9 +21,21 @@ Do not create capability-only names such as `Search`, `Filter`, or `Navigate` wh
 - Use `Grid` for repeated two-dimensional tracks.
 - Use `Split` for two peer regions whose relationship is the dominant page structure.
 - Use `Sidebar` for a secondary edge region, not merely any narrow column.
-- Do not add `Row` or `Stack` solely to imply exact spacing.
+- Do not add `Row` or `Stack` solely to avoid putting `gap` or `padding` on the parent that owns the space.
 
 Source order is semantic reading and traversal order. `position` and alignment props may refine it but must not contradict it.
+
+## Refine inferred geometry only when useful
+
+- Omit geometry when a primitive's intrinsic definition reconstructs the observed form adequately.
+- Use `"fill"` and `"content"`; do not serialize `"100%"`, `"hug"`, `"fit"`, or `"auto"`.
+- Use `size={44}` instead of equal `width` and `height` on a square element.
+- Use `flex` for proportional siblings and grid spans for shared tracks.
+- Use parent `gap`, then parent `padding`, before using a child margin.
+- Use numeric dimensions for consequential viewport, pane, control, row, and media geometry—not every text glyph box.
+- Use anchored `floating` positioning before absolute offsets for menus, popovers, and tooltips.
+
+Explicit props override only the geometry they name. Omitted geometry continues to be inferred from the primitive definition.
 
 ## Separate collection, item, and item layout
 
@@ -64,7 +76,7 @@ Use the standard state props (`selected`, `checked`, `expanded`, `disabled`, `bu
 
 ## Avoid decorative nodes
 
-Do not represent decorative separators, backgrounds, shadows, or ornamental icons. Represent an icon when it communicates meaning or is part of an affordance. Use `Spacer` only when separation creates a meaningful flexible region, such as pushing footer actions to an edge; ordinary whitespace is Layer 3.
+Do not represent decorative separators, backgrounds, shadows, or ornamental icons. Represent an icon when it communicates meaning or is part of an affordance. Use `Spacer` only when consuming remaining space is meaningful, such as pushing footer actions to an edge; use `gap` for regular whitespace.
 
 ## Normalize shallow ambiguity
 

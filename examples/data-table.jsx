@@ -73,7 +73,7 @@
       controls="members-table"
     />
 
-    <Drawer id="member-filters" label="Member filters" position="right">
+    <Drawer id="member-filters" label="Member filters" edge="right">
       <Form action="apply-member-filters" label="Member filters">
         <FormField label="Status">
           <MultiSelect name="status" options="memberStatuses" />

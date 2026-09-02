@@ -21,7 +21,7 @@ restricted JSX source
 → semantic HTML wireframe
 ```
 
-The viewer parses JSX rather than importing it as application code. It accepts the same constrained form defined by the spec: one JSX root, known primitives, literal props, literal text, and comments. It rejects function calls, spreads, member expressions, arbitrary JavaScript, and unknown primitives.
+The viewer parses JSX rather than importing it as application code. It accepts the same constrained form defined by the spec: one JSX root, known primitives, literal props, literal text, and comments. It rejects function calls, spreads, member expressions, arbitrary JavaScript, unknown primitives, and invalid geometry values.
 
 ## Executable primitive definitions
 
@@ -47,15 +47,26 @@ interface IntrinsicSize {
 }
 ```
 
-Primitives share profiles such as `control`, `input`, `media`, `collection`, and `region`. A renderer can therefore infer that `IconButton` is compact and square, `SearchInput` fills available inline space, and `Image` reserves a media-shaped region without requiring `width`, `height`, `gap`, or other Layer 3 props in the JSX.
+Primitives share profiles such as `control`, `input`, `media`, `collection`, and `region`. A renderer can therefore infer that `IconButton` is compact and square, `SearchInput` fills available inline space, and `Image` reserves a media-shaped region when geometry props are absent.
+
+Optional geometry is resolved after primitive styles, so it overrides only the property it names. The viewer supports canonical size and constraint props; uniform, axis, and edge spacing; flex weights and wrapping; grid spans; scroll and overflow behavior; sticky/fixed/absolute positioning; and anchored floating placement. Numeric values map from one Layer 2 reference unit to one CSS pixel.
+
+The preview root establishes the viewport for `position="fixed"`. Anchored floating placement uses the current [CSS Anchor Positioning](https://drafts.csswg.org/css-anchor-position/) model (`anchor-name`, `position-anchor`, and `position-area`); browsers without it retain an absolute-position fallback inside the wireframe.
+
+```jsx
+<Row width="fill" gap={12}>
+  <Stack flex={1}>…</Stack>
+  <IconButton size={44} icon="filter" label="Filters" />
+</Row>
+```
 
 Every rendered primitive and every internal flex item is `flex: 0 0 auto` by default. Semantic primitives that explicitly represent flexible distribution—currently `Spacer`, equal-width tabs, and projected horizontal collection items—override that default in the renderer. A fill-profile child inside `Row` sizes from its intrinsic definition instead of claiming the entire row. Primitives such as `Image` may define compact intrinsic minimums for narrow containers; those remain part of the primitive definition rather than source JSX.
 
 `Row` centers children on its cross axis by default. Explicit `align="start|center|end|baseline|stretch"` values override that component default.
 
-`Stack` renders without an implicit gap between children. This is a wireframe-renderer convention, not serialized Layer 2 styling information.
+`Stack` renders without an implicit gap between children. This remains its inferred viewer convention. An explicit `gap` overrides it.
 
-The numeric minimums are heuristics of this viewer. They are part of the executable primitive definition, not serialized AST data and not a promise that another renderer will produce identical pixels.
+The numeric minimums are heuristics of this viewer. They are part of the executable primitive definition, not serialized AST data. Explicit canonical geometry is serialized and should reconstruct approximately consistently, but it is not a promise of pixel-identical output.
 
 ## Collection projection
 
@@ -73,7 +84,7 @@ This repetition is preview behavior only. It does not modify the source tree.
 
 - data bindings render as labeled placeholders rather than sample records;
 - actions and destinations are visible but do not execute;
-- overlay primitives render in place so their anatomy remains inspectable;
+- overlay primitives render in place when positioning is omitted; explicit fixed, absolute, or anchored floating geometry activates spatial placement;
 - responsive behavior is the viewer's inference, because v0.1 has no responsive-variant grammar;
 - source editing uses a plain text area rather than a full code editor; and
 - the viewer does not yet expose a public package API.

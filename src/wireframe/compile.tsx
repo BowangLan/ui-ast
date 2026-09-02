@@ -1,6 +1,7 @@
 import { parse } from "@babel/parser";
 import { createElement, type ReactNode } from "react";
 
+import { validateGeometryProps } from "./geometry";
 import type { PrimitiveDefinition, PrimitiveProps } from "./types";
 
 interface SourceLocation {
@@ -37,6 +38,13 @@ interface NullLiteral {
   loc?: { start: SourceLocation };
 }
 
+interface UnaryNumericLiteral {
+  type: "UnaryExpression";
+  operator: "-";
+  argument: NumericLiteral;
+  loc?: { start: SourceLocation };
+}
+
 interface JsxEmptyExpression {
   type: "JSXEmptyExpression";
   loc?: { start: SourceLocation };
@@ -49,6 +57,7 @@ interface JsxExpressionContainer {
     | NumericLiteral
     | BooleanLiteral
     | NullLiteral
+    | UnaryNumericLiteral
     | JsxEmptyExpression
     | { type: string; loc?: { start: SourceLocation } };
   loc?: { start: SourceLocation };
@@ -102,6 +111,15 @@ function expressionValue(container: JsxExpressionContainer): unknown {
         .value;
     case "NullLiteral":
       return null;
+    case "UnaryExpression": {
+      const unary = expression as UnaryNumericLiteral;
+      if (unary.operator === "-" && unary.argument.type === "NumericLiteral") {
+        return -unary.argument.value;
+      }
+      throw new Error(
+        `Only literal JSX expressions are allowed${locationSuffix(expression)}`,
+      );
+    }
     case "JSXEmptyExpression":
       return undefined;
     default:
@@ -168,6 +186,7 @@ function elementToReact(
   }
 
   const props = attributesToProps(node.openingElement.attributes);
+  validateGeometryProps(tagName, props);
   const children: ReactNode[] = [];
 
   node.children.forEach((child, index) => {

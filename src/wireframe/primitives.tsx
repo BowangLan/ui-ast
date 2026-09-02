@@ -15,6 +15,7 @@ import type {
   PrimitiveProps,
 } from "./types";
 import { ViewerContext } from "./context";
+import { geometryStyle } from "./geometry";
 
 const SIZE = {
   page: {
@@ -220,6 +221,7 @@ function PrimitiveFrame({
   name,
   category,
   size,
+  props,
   className = "",
   style,
   children,
@@ -228,6 +230,7 @@ function PrimitiveFrame({
   name: string;
   category: PrimitiveCategory;
   size: IntrinsicSize;
+  props: PrimitiveProps;
   className?: string;
   style?: CSSProperties;
   children?: ReactNode;
@@ -244,16 +247,23 @@ function PrimitiveFrame({
       ? { "--wf-compact-min-block": `${size.compactMinBlock}px` }
       : {}),
     ...(size.aspectRatio ? { "--wf-aspect": size.aspectRatio } : {}),
+    ...geometryStyle(props),
   };
+
+  const id = stringProp(props, "id");
 
   return (
     <div
+      id={id}
       className={`wf-node wf-${name.toLowerCase()} ${className}`.trim()}
       data-primitive={name}
       data-category={category}
       data-inline={size.inline}
       data-block={size.block}
       data-size-profile={size.profile}
+      data-edge={stringProp(props, "edge")}
+      data-position={stringProp(props, "position")}
+      data-scroll={stringProp(props, "scroll")}
       style={frameStyle}
     >
       <span className="wf-node-tag" aria-hidden="true">
@@ -283,6 +293,7 @@ function define(
         name={name}
         category={category}
         size={size}
+        props={props}
         className={className}
         style={style?.(props)}
         caption={sourceCaption(props)}
@@ -916,6 +927,7 @@ function stateDefinition(name: string, className: string): PrimitiveDefinition {
         name={name}
         category="state"
         size={SIZE.state}
+        props={props}
         className={`wf-state ${className}`}
         caption={when ? `when: ${when}` : undefined}
       >
