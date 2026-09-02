@@ -665,13 +665,11 @@ const navigationDefinitions = [
     SIZE.region,
     "wf-breadcrumbs",
     (props) => {
-      const children = Children.toArray(props.children);
-      return children.map((child, index) => (
-        <span key={isValidElement(child) ? String(child.key) : String(child)}>
+      const childCount = Children.count(props.children);
+      return Children.map(props.children, (child, index) => (
+        <span>
           {child}
-          {index < children.length - 1 ? (
-            <span aria-hidden="true">/</span>
-          ) : null}
+          {index < childCount - 1 ? <span aria-hidden="true">/</span> : null}
         </span>
       ));
     },

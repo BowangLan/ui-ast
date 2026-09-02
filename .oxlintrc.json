@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "react", "jsx-a11y", "vitest"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {},
+  "ignorePatterns": ["examples/**"],
+  "options": {
+    "typeAware": true,
+    "maxWarnings": 0
+  },
+  "env": {
+    "builtin": true,
+    "browser": true
+  }
+}

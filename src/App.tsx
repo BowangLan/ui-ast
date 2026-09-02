@@ -3,7 +3,6 @@ import {
   useDeferredValue,
   useEffect,
   useMemo,
-  useRef,
   useState,
   type ChangeEvent,
   type CSSProperties,
@@ -61,7 +60,7 @@ function App() {
   const [compilerLoadError, setCompilerLoadError] = useState<string | null>(
     null,
   );
-  const lineRuleRef = useRef<HTMLDivElement>(null);
+  const [editorScrollTop, setEditorScrollTop] = useState(0);
   const deferredSource = useDeferredValue(source);
   const result = useMemo(
     () =>
@@ -193,8 +192,11 @@ function App() {
           </label>
 
           <div className="editor-frame">
-            <div className="editor-rule" aria-hidden="true" ref={lineRuleRef}>
-              <div className="editor-rule-track">
+            <div className="editor-rule" aria-hidden="true">
+              <div
+                className="editor-rule-track"
+                style={{ transform: `translateY(-${editorScrollTop}px)` }}
+              >
                 {Array.from({ length: lineCount }, (_, index) => (
                   <span key={index}>{index + 1}</span>
                 ))}
@@ -206,13 +208,9 @@ function App() {
                 setSource(event.target.value);
                 setSelectedSample("custom");
               }}
-              onScroll={(event) => {
-                const track = lineRuleRef.current?.firstElementChild as
-                  HTMLElement | undefined;
-                if (track) {
-                  track.style.transform = `translateY(-${event.currentTarget.scrollTop}px)`;
-                }
-              }}
+              onScroll={(event) =>
+                setEditorScrollTop(event.currentTarget.scrollTop)
+              }
               aria-label="Layer 2 JSX"
               spellCheck={false}
               autoCapitalize="off"
@@ -284,10 +282,10 @@ function App() {
             <div className="canvas-ruler vertical" aria-hidden="true" />
 
             {!compiler && !result.error ? (
-              <div className="compiler-loading" role="status">
+              <output className="compiler-loading">
                 <span aria-hidden="true" />
                 Preparing the JSX renderer…
-              </div>
+              </output>
             ) : result.error ? (
               <div className="compile-error" role="alert">
                 <span className="error-index">!</span>

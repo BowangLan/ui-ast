@@ -5,8 +5,8 @@ The repository includes a browser tool that renders restricted UI AST JSX as a s
 ## Run it
 
 ```sh
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 Paste JSX into the editor, open a local `.jsx` file, or choose one of the repository examples. The preview updates live. Canvas controls provide phone, tablet, desktop, and available-width views. “Anatomy” outlines primitive boundaries and reveals a node's name and intrinsic size profile on hover. “States” includes alternatives with `when`, such as `EmptyState` and `ErrorState`.

@@ -68,11 +68,19 @@ See [SPEC.md](SPEC.md) for the normative v0.1 language, [docs/canonicalization.m
 The repository includes an interactive reference viewer that parses the restricted JSX and renders it through executable React primitive definitions. Each primitive owns an intrinsic size profile, so the viewer can infer control, media, collection, and region dimensions without adding visual props to the AST.
 
 ```sh
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 The viewer supports live editing, local `.jsx` files, bundled examples, multiple canvas widths, primitive anatomy labels, and alternate state regions. See [docs/wireframe-viewer.md](docs/wireframe-viewer.md) for the rendering model and limitations.
+
+Run the complete formatting, Oxlint, test, and production-build checks with:
+
+```sh
+bun run check
+```
+
+Oxlint runs type-aware TypeScript, React, JSX accessibility, and Vitest correctness rules. The semantic JSX files in `examples/` are exercised by the parser tests instead of linted as executable React modules. Use `bun run lint:fix` to apply Oxlint's safe fixes.
 
 ## Status
 
