@@ -213,6 +213,14 @@ Layout encodes qualitative relationships, never measurement.
 
 Layout nodes do not imply CSS flexbox or grid. Responsive alternatives are not standardized in v0.1; document the dominant observed composition and note meaningful variants when necessary.
 
+### 10.1 Renderer intrinsic sizing
+
+A renderer MAY associate intrinsic size metadata with each primitive definition. Such metadata can distinguish fill, content-sized, compact, line, control, media, and region behavior. It MAY include renderer-specific minimums or aspect ratios needed to produce a useful preview.
+
+Intrinsic sizing metadata MUST NOT be serialized as document props. In particular, renderer minimums do not make `width`, `height`, `gap`, or other Layer 3 measurements valid UI AST. Different renderers MAY choose different pixels while preserving the primitive's qualitative size behavior.
+
+The repository's executable registry is a non-normative reference implementation of this rule.
+
 ## 11. Collections and scopes
 
 `List`, `HorizontalList`, `GridList`, `DataTable`, `Tree`, `Feed`, and `GroupedList` express distinct observed collection forms. Authors MUST choose based on the interaction and visual organization, not the underlying data type.

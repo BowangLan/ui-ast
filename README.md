@@ -63,9 +63,20 @@ The tree says that the projects appear as a vertical list, what each row communi
 
 See [SPEC.md](SPEC.md) for the normative v0.1 language, [docs/canonicalization.md](docs/canonicalization.md) for authoring choices, and [examples](examples) for stress tests.
 
+## Wireframe viewer
+
+The repository includes an interactive reference viewer that parses the restricted JSX and renders it through executable React primitive definitions. Each primitive owns an intrinsic size profile, so the viewer can infer control, media, collection, and region dimensions without adding visual props to the AST.
+
+```sh
+npm install
+npm run dev
+```
+
+The viewer supports live editing, local `.jsx` files, bundled examples, multiple canvas widths, primitive anatomy labels, and alternate state regions. See [docs/wireframe-viewer.md](docs/wireframe-viewer.md) for the rendering model and limitations.
+
 ## Status
 
-**Experimental v0.1.** The vocabulary and rules are usable for discussion and annotation, but unresolved issues are deliberately recorded rather than hidden. There is no renderer, parser, package, or compatibility guarantee yet.
+**Experimental v0.1.** The vocabulary and rules are usable for discussion and annotation, but unresolved issues are deliberately recorded rather than hidden. The included parser and wireframe viewer are reference tooling; there is no public package or compatibility guarantee yet.
 
 The name **UI AST** emphasizes that the output is a structural representation. “Layer 2” names the boundary, not a product tier or version.
 
@@ -79,6 +90,7 @@ UI AST is informed by W3C model-based UI work, the Cameleon Reference Framework,
 - `primitives/` — primitive reference by category
 - `docs/` — principles, canonicalization, prior work, and open questions
 - `examples/` — realistic `.jsx` fixtures used to challenge the vocabulary
+- `src/` — the interactive wireframe viewer and executable primitive registry
 
 ## License
 
