@@ -209,7 +209,7 @@ Layout encodes qualitative relationships, never measurement.
 - `Sidebar` identifies a secondary edge region; `position="left|right"` records its relationship to primary content.
 - `Spacer` consumes otherwise available space to separate meaningful groups. It has no sizing props.
 
-`align="start|center|end|baseline|stretch"` describes the cross-axis relationship. `justify="start|center|end|between|around|evenly"` describes main-axis distribution. Authors SHOULD omit default or visually uncertain values.
+`align="start|center|end|baseline|stretch"` describes the cross-axis relationship. `Row` defaults to `align="center"` when the prop is omitted. `justify="start|center|end|between|around|evenly"` describes main-axis distribution. Authors SHOULD omit default or visually uncertain values.
 
 Layout nodes do not imply CSS flexbox or grid. Responsive alternatives are not standardized in v0.1; document the dominant observed composition and note meaningful variants when necessary.
 

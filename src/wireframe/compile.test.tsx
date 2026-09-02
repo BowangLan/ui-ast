@@ -34,6 +34,15 @@ describe("compileLayer2Jsx", () => {
     expect(markup).toContain("Create project");
   });
 
+  it("centers Row children by default and respects explicit alignment", () => {
+    expect(render("<Row><Text>Default</Text></Row>")).toContain(
+      "align-items:center",
+    );
+    expect(render('<Row align="end"><Text>End</Text></Row>')).toContain(
+      "align-items:flex-end",
+    );
+  });
+
   it.each(samples)("compiles the $label example", ({ source }) => {
     expect(() => render(source)).not.toThrow();
   });

@@ -322,6 +322,13 @@ function flowStyle(props: PrimitiveProps): CSSProperties {
   };
 }
 
+function rowStyle(props: PrimitiveProps): CSSProperties {
+  return {
+    alignItems: "center",
+    ...flowStyle(props),
+  };
+}
+
 function repeatChildren(children: ReactNode, count: number): ReactNode[] {
   const nodes = Children.toArray(children);
   const repeated: ReactNode[] = [];
@@ -366,7 +373,7 @@ const structureDefinitions = [
 ];
 
 const layoutDefinitions = [
-  define("Row", "layout", SIZE.layout, "wf-row", undefined, flowStyle),
+  define("Row", "layout", SIZE.layout, "wf-row", undefined, rowStyle),
   define("Stack", "layout", SIZE.layout, "wf-stack", undefined, flowStyle),
   define("Grid", "layout", SIZE.layout, "wf-grid", undefined, (props) => ({
     gridTemplateColumns: `repeat(${numberProp(props, "columns") ?? 2}, minmax(0, 1fr))`,

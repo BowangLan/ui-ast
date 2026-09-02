@@ -11,6 +11,6 @@ Layout primitives encode qualitative spatial relationships, not CSS or measureme
 | `Sidebar` | Secondary content or navigation at an edge of primary content | `position` is `left` or `right`     |
 | `Spacer`  | Flexible separation between meaningful sibling groups         | no props                            |
 
-`align` values are `start`, `center`, `end`, `baseline`, and `stretch`. `justify` values are `start`, `center`, `end`, `between`, `around`, and `evenly`.
+`align` values are `start`, `center`, `end`, `baseline`, and `stretch`. `Row` uses `center` when `align` is omitted; an explicit value overrides the default. `justify` values are `start`, `center`, `end`, `between`, `around`, and `evenly`.
 
 Do not encode `gap`, `padding`, sizes, ratios, coordinates, wrapping thresholds, or breakpoints. `columns` is allowed because track count can change comparison and reading structure. Use `Spacer` sparingly; ordinary whitespace is not a node.

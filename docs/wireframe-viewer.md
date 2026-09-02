@@ -51,6 +51,8 @@ Primitives share profiles such as `control`, `input`, `media`, `collection`, and
 
 Every rendered primitive is `flex: 0 0 auto` by default. Semantic primitives that explicitly represent flexible distribution—currently `Spacer`, equal-width tabs, and projected horizontal collection items—override that default in the renderer. A fill-profile child inside `Row` sizes from its intrinsic definition instead of claiming the entire row. Primitives such as `Image` may define compact intrinsic minimums for narrow containers; those remain part of the primitive definition rather than source JSX.
 
+`Row` centers children on its cross axis by default. Explicit `align="start|center|end|baseline|stretch"` values override that component default.
+
 The numeric minimums are heuristics of this viewer. They are part of the executable primitive definition, not serialized AST data and not a promise that another renderer will produce identical pixels.
 
 ## Collection projection
